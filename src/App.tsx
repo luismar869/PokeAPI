@@ -1,29 +1,23 @@
-import { useEffect, useState } from 'react'
-import { getPokemons } from './services/load_pokemon'
-interface Pokemon {
-  name: string;
-  url: string;
-}
+import React, { lazy, Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
+import NavBar from "./NavBar";
 
-function App() {
-  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+const Home   = lazy(() => import("./pages/Home"));
+const Detalles = lazy(() => import("./pages/Detalles"));
 
-  useEffect(() => {
-    getPokemons(20).then(data => setPokemons(data));
-  }, []);
 
+const App: React.FC = () => {
   return (
     <div>
-      <h1>Pokédex</h1>
-      <div>
-        {pokemons.map((pokemon) => (
-          <div key={pokemon.name} style={{ border: '1px solid #ccc', padding: '10px', borderRadius: '8px', margin: '10px', width: '200px', textAlign: 'center' }}>
-            <p>{pokemon.name}</p>
-          </div>
-        ))}
-      </div>
+      <NavBar />
+      <Suspense fallback={<div className="p-10">Cargando...</div>}>
+        <Routes>
+          <Route path="/"       element={<Home />}   />
+          <Route path="/detalles" element={<Detalles />} />
+        </Routes>
+      </Suspense>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
