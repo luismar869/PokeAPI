@@ -32,7 +32,7 @@ export default function Home() {
     setError(false)
 
     if (selectedType === '') {
-      getPokemons(36)
+      getPokemons(150)
         .then(data => {
           setPokemons(data)
           setLoading(false)
@@ -102,7 +102,7 @@ export default function Home() {
       {!loading && !error && (
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
           {pokemons
-            .filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
+            .filter(p => p.name.includes(search.toLowerCase()))
             .filter(p => onlyFavorites ? favorites.includes(p.name) : true)
             .map((pokemon) => {
               const esFav = favorites.includes(pokemon.name)
@@ -123,7 +123,7 @@ export default function Home() {
                     textAlign: 'center' 
                   }}
                 >
-                  <img src={imgUrl} alt={pokemon.name} style={{ width: '90px', height: '90px', marginLeft: '12px' }} />
+                  <img src={imgUrl} style={{ width: '90px', height: '90px', marginLeft: '12px' }} />
                   <p style={{ fontWeight: 'bold', textTransform: 'capitalize' }}>{pokemon.name}</p>
                   
                   <button onClick={() => clickFavorito(pokemon.name)} style={{ width: '100%', cursor: 'pointer' }}>
@@ -135,7 +135,7 @@ export default function Home() {
         </div>
       )}
 
-      {!loading && !error && pokemons.filter(p => p.name.toLowerCase().includes(search.toLowerCase())).filter(p => onlyFavorites ? favorites.includes(p.name) : true).length === 0 && (
+      {!loading && !error && pokemons.filter(p => p.name.includes(search.toLowerCase())).filter(p => onlyFavorites ? favorites.includes(p.name) : true).length === 0 && (
         <p style={{ textAlign: 'center', color: 'gray' }}>No se encontraron resultados.</p>
       )}
     </div>
