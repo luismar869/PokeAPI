@@ -1,68 +1,81 @@
-import React, { useEffect, useState } from 'react';
-import { getPokemonList, getPokemonData } from '../services/load_details';
+import { useEffect, useState } from 'react'
+import { getPokemonList, getPokemonData } from '../services/load_details'
 
-const Detalles: React.FC = () => {
-  const [lista, setLista] = useState<any[]>([]);
-  const [pokemon, setPokemon] = useState<any>(null);
-  const [verModal, setVerModal] = useState(false);
+export default function Detalles() {
+  const [lista, setLista] = useState<any[]>([])
+  const [pokemon, setPokemon] = useState<any>(null)
+  const [verModal, setVerModal] = useState(false)
 
   useEffect(() => {
-    getPokemonList(30).then(setLista);
-  }, []);
+    getPokemonList(30).then(data => setLista(data))
+  }, [])
 
   const abrirDetalles = async (nombre: string) => {
-    const data = await getPokemonData(nombre);
-    setPokemon(data);
-    setVerModal(true);
-  };
+    const data = await getPokemonData(nombre)
+    setPokemon(data)
+    setVerModal(true)
+  }
 
   return (
-    <div style={{padding: '20px' }}>
-      <h1>Boceto: Lista de Pokémones</h1>
+    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+      <h1>Lista de Pokémones</h1>
       
-      <ul>
+      <ul style={{ paddingLeft: '20px' }}>
         {lista.map((p) => (
-          <li key={p.name} style={{ marginBottom: '10px' }}>
-            {p.name.toUpperCase()} - 
-            <button onClick={() => abrirDetalles(p.name)}>Ver detalles</button>
+          <li key={p.name} style={{ marginBottom: '10px', textTransform: 'uppercase' }}>
+            {p.name} - {' '}
+            <button onClick={() => abrirDetalles(p.name)} style={{ cursor: 'pointer' }}>
+              Ver detalles
+            </button>
           </li>
         ))}
       </ul>
 
       {verModal && pokemon && (
         <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', overflowY: 'scroll', padding: '20px'
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          width: '100%', 
+          height: '100%', 
+          overflowY: 'scroll', 
+          padding: '20px'
         }}>
-          <div style={{ background: 'grey', border: '2px solid grey', padding: '20px' }}>
-            <button onClick={() => setVerModal(false)}>CERRAR</button>
+          <div style={{ backgroundColor: 'lightgray', border: '2px solid black', padding: '20px', maxWidth: '500px', margin: '40px auto' }}>
+            <button onClick={() => setVerModal(false)} style={{ fontWeight: 'bold', cursor: 'pointer' }}>
+              CERRAR
+            </button>
             
-            <h2>DETALLES DE: {pokemon.name.toUpperCase()}</h2>
-            <img src={pokemon.sprites.front_default}/>
+            <h2 style={{ textTransform: 'uppercase' }}>DETALLES DE: {pokemon.name}</h2>
+            <img src={pokemon.sprites.front_default} alt={pokemon.name} style={{ width: '120px' }} />
 
-            <hr />
+            <hr style={{ border: '1px solid black' }} />
+            
             <div>
-              <p>ID: {pokemon.id}</p>
-              <p>Nombre: {pokemon.name}</p>
-              <p>Experiencia base: {pokemon.base_experience}</p>
-              <p>Altura: {pokemon.height}</p>
-              <p>Peso: {pokemon.weight}</p>
-              <p>Orden: {pokemon.order}</p>
-              <p>Especie: {pokemon.species.name}</p>
-              <p>Es default: {pokemon.is_default ? "Si" : "No"}</p>
+              <p><b>ID:</b> {pokemon.id}</p>
+              <p><b>Nombre:</b> {pokemon.name}</p>
+              <p><b>Experiencia base:</b> {pokemon.base_experience}</p>
+              <p><b>Altura:</b> {pokemon.height}</p>
+              <p><b>Peso:</b> {pokemon.weight}</p>
+              <p><b>Orden:</b> {pokemon.order}</p>
+              <p><b>Especie:</b> {pokemon.species.name}</p>
+              <p><b>Es default:</b> {pokemon.is_default ? "Si" : "No"}</p>
+              
               {pokemon.stats.map((s: any) => (
-                <p key={s.stat.name}>{s.stat.name}: {s.base_stat}</p>
+                <p key={s.stat.name}><b>{s.stat.name}:</b> {s.base_stat}</p>
               ))}
 
-              <p>Tipos: {pokemon.types.map((t: any) => t.type.name).join(', ')}</p>
-              <p>Habilidades: {pokemon.abilities.map((a: any) => a.ability.name).join(', ')}</p>
+              <p><b>Tipos:</b> {pokemon.types.map((t: any) => t.type.name).join(', ')}</p>
+              <p><b>Habilidades:</b> {pokemon.abilities.map((a: any) => a.ability.name).join(', ')}</p>
 
+              <p><b>Aparece en juegos (primeros 10):</b></p>
               <ul>
                 {pokemon.game_indices.slice(0, 10).map((g: any) => (
-                  <li key={g.version.name}>Aparece en: {g.version.name} (Índice: {g.game_index})</li>
+                  <li key={g.version.name}>{g.version.name} (Índice: {g.game_index})</li>
                 ))}
               </ul>
 
-              <p>Movimientos:</p>
+              <p><b>Movimientos (primeros 15):</b></p>
               <ul>
                 {pokemon.moves.slice(0, 15).map((m: any) => (
                   <li key={m.move.name}>{m.move.name}</li>
@@ -73,7 +86,5 @@ const Detalles: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
-
-export default Detalles;
+  )
+}
